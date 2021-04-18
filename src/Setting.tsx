@@ -16,39 +16,45 @@ export type SettingPropsType = {
 type tabloPropsType = {
     value: number
     callback: (num: any) => void
-    ainableCallback: (text: string) => void
 
 }
 
-function Setting({minValue, maxValue, changeMaxValue, changeMinValue, dis, disableCallback, ainableCallback, equallyCallback}: SettingPropsType) {
-
-
-
+function Setting({minValue, maxValue, changeMaxValue, changeMinValue,
+                     dis, disableCallback, ainableCallback,
+                     equallyCallback}: SettingPropsType) {
 
     const onChangeMinFunc = (e: ChangeEvent<HTMLInputElement>) => {
-        changeMinValue(Number(e.currentTarget.value))
+      //  changeMinValue(Number(e.currentTarget.value))
         switch (true) {
             case((Number(e.currentTarget.value)) < 0) :
-                return  equallyCallback("incorrect value")
+                changeMinValue(Number(e.currentTarget.value));
+                equallyCallback("incorrect value");
+                break;
             case((Number(e.currentTarget.value)) >= maxValue) :
-                return (equallyCallback('incorrect value'))
+                (equallyCallback('incorrect value'))
+                changeMinValue(Number(e.currentTarget.value))
+                break
             default:
-                 return ainableCallback('enter value')
+                ainableCallback('enter value')
+                changeMinValue(Number(e.currentTarget.value))
         }
     }
     const onChangeMaxFunc = (e: ChangeEvent<HTMLInputElement>) => {
-        changeMaxValue(Number(e.currentTarget.value))
+      //  changeMaxValue(Number(e.currentTarget.value))
         switch (true) {
-            case((Number(e.currentTarget.value)) < 0) :
-                return (
-                    equallyCallback("incorrect value")
+            case((Number(e.currentTarget.value)) < 0 || minValue < 0) :
+                equallyCallback("incorrect value")
+                changeMaxValue(Number(e.currentTarget.value))
+                break
 
-                )
             case((Number(e.currentTarget.value)) <= minValue) :
-                return (equallyCallback('incorrect value'))
-
+                 (equallyCallback('incorrect value'))
+                changeMaxValue(Number(e.currentTarget.value))
+                break
             default:
-                 return ainableCallback('enter value')
+                 ainableCallback('enter value')
+                changeMaxValue(Number(e.currentTarget.value))
+                break
         }
     }
 
@@ -56,13 +62,13 @@ function Setting({minValue, maxValue, changeMaxValue, changeMinValue, dis, disab
 
         min Value: < Table value={minValue}
                            callback={onChangeMinFunc}
-                           ainableCallback={ainableCallback}
+
 
     />
         max Value: < Table value={maxValue}
                            callback={onChangeMaxFunc}
-                           ainableCallback={ainableCallback}
-                           />
+
+    />
         <Buttonn title={"set"} disabl={dis} callback={disableCallback}/>
 
     </div>
@@ -80,12 +86,9 @@ function Table(props: tabloPropsType) {
             }}> {props.value}</div>
             <input type={"number"}
                    value={props.value}
-                   onFocus={(e) => props.ainableCallback("enter value")}
                    onChange={props.callback}
             />
 
         </div>)
 }
-
-
 export default Setting;

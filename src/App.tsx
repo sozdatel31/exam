@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 import Schet from "./Schet";
 import Setting from "./Setting";
@@ -7,8 +7,34 @@ import {type} from "os";
 function App() {
 
     let [minValue, setMinValue] = useState<number>(0)
-    let [maxValue, setMaxValue] = useState<number>(10)
     let [value, setValue] = useState<string | number>(minValue)
+    useEffect(() => {
+        let minValueStorage = localStorage.getItem('minValue')
+        if (minValueStorage) {
+            let newMinValue = JSON.parse(minValueStorage)
+            setMinValue(newMinValue)
+            setValue(newMinValue)
+        }
+    }, [])
+    useEffect(() => {
+        if (minValue >= 0) {
+            localStorage.setItem('minValue', JSON.stringify(minValue))
+        }
+    }, [minValue])
+    let [maxValue, setMaxValue] = useState<number>(10)
+    useEffect(() => {
+        let maxValueStorage = localStorage.getItem('maxValue')
+        if (maxValueStorage) {
+            let newMaxValue = JSON.parse(maxValueStorage)
+            setMaxValue(newMaxValue)
+        }
+    }, [])
+    useEffect(() => {
+        if (maxValue >= 0) {
+            localStorage.setItem('maxValue', JSON.stringify(maxValue))
+        }
+    }, [maxValue])
+
     let [dis, setDis] = useState<boolean>(true) //кнопка set
     let [dis2, setDis2] = useState<boolean>(false) //кнопка yoyo
     let [dis3, setDis3] = useState<boolean>(false) //кнопка inc
@@ -21,13 +47,10 @@ function App() {
     }
 
     const ainableCallback = (text: string) => {
-        if(minValue<maxValue)
-        {setValue(text)
+        setValue(text)
         setDis(false)
         setDis2(true)
-        setDis3(true)}
-
-
+        setDis3(true)
     }
 
     function equallyCallback(text: string) {
